@@ -1,0 +1,8 @@
+Checking Paket version (downloading latest stable)...
+Version 5.6.12 not found in cache.
+Starting download from https://github.com/fsprojects/Paket/releases/download/5.6.12/paket.exe
+Done.
+Paket version 5.6.12
+Performance:
+ - Disk IO: 283 milliseconds
+ - Runtime: 1 second
