@@ -49,8 +49,6 @@ type ControllerButton =
 //    | Nope // both Splat (show splat?)
  
 
-let createRect (x:int) (y:int) (w:int) (h:int) = 
-    {X = x * 1<px>; Y =  y * 1<px>; Width = w * 1<px>; Height = h * 1<px>}
 
 let inline bresenham fill (x0, y0) (x1, y1) =
     let steep = abs(y1 - y0) > abs(x1 - x0)
@@ -99,7 +97,7 @@ let update (state:TreatzState) : TreatzState =
 
     | _ -> 
         
-        state.GameState <- Logic.update state.GameState
+        state.GameState <- Logic.update state.GameState pressed
         state
     
 
@@ -156,31 +154,45 @@ let render(context:RenderingContext) (state:TreatzState) =
         for c in s do
             bltf (state.Sprites.[byte c]) ({X = (x + (i*16)) * 1<px>; Y = y * 1<px>; Width = 16<px>; Height = 16<px>}) 
             i <- i + 1
+
              
     // clear screen
     context.Renderer |> SDLRender.setDrawColor (0uy,0uy,0uy,0uy) |> ignore
     context.Renderer |> SDLRender.clear |> ignore
-//
-//    context.Surface
-//    |> SDLSurface.fillRect None {Red=80uy;Green=80uy;Blue=200uy;Alpha=255uy}
-//    |> ignore
+
+    context.Surface
+    |> SDLSurface.fillRect None {Red=0uy;Green=0uy;Blue=0uy;Alpha=255uy}
+    |> ignore
 //    
 //    context.Surface
 //    |> SDLSurface.fillRect None {Red=80uy;Green=80uy;Blue=200uy;Alpha=255uy}
 //    |> ignore
 //    
             
+    match state.GameState.State with
+    | Playing -> 
+        // draw player
+        
+        context.Surface
+        |> SDLSurface.fillRect (Some(createRect state.GameState.PlayerLocation.x state.GameState.PlayerLocation.y 10 10)) {Red=255uy;Green=255uy;Blue=255uy;Alpha=255uy}
+        |> ignore
+        
+        for b in state.GameState.Borders do
+            context.Surface
+            |> SDLSurface.fillRect (Some b) {Red=255uy;Green=255uy;Blue=200uy;Alpha=255uy}
+            |> ignore
+        
+        
+        ()
+    | GameOver ->  
+        ()
+
     context.Texture
     |> SDLTexture.update None context.Surface
     |> ignore
     context.Renderer |> SDLRender.copy context.Texture None None |> ignore
 
-    match state.GameState.State with
-    | Playing -> 
-        ()
-    | GameOver ->  
-        ()
-
+ 
     context.Renderer |> SDLRender.setDrawColor (200uy,255uy,50uy,0uy) |> ignore
     context.Renderer |> SDLRender.drawRect (createRect 0 0 (int screenWidth) (int screenHeight)) |> ignore
     context.Renderer |> SDLRender.drawRect (createRect 1 1 (int screenWidth - 1) (int screenHeight - 1)) |> ignore
