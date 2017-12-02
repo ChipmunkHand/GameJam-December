@@ -136,6 +136,7 @@ let fillRect (rect:Rectangle option) (color:SDLPixel.Color) (surface:Surface) :b
     let format = surface |> getFormat
     SDLGeometry.withSDLRectPointer (fun r->0 = SDLSurfaceNative.SDL_FillRect(surface.Pointer, r, color |> SDLPixel.mapColor format)) rect
 
+
 let loadBmp (pixelFormat: uint32) (fileName:string) : Surface =
     let bitmapSurface = SDLSurfaceNative.SDL_LoadBMP_RW(SDLUtility.withUtf8String (fun ptr->SDLRWops.SDLRWopsNative.SDL_RWFromFile(ptr,"rb")) fileName, 1)
     let convertedSurface = SDLSurfaceNative.SDL_ConvertSurfaceFormat(bitmapSurface,pixelFormat,0u)

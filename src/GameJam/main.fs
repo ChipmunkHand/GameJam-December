@@ -48,6 +48,10 @@ type ControllerButton =
 //    | Playing
 //    | Nope // both Splat (show splat?)
  
+
+let createRect (x:int) (y:int) (w:int) (h:int) = 
+    {X = x * 1<px>; Y =  y * 1<px>; Width = w * 1<px>; Height = h * 1<px>}
+
 let inline bresenham fill (x0, y0) (x1, y1) =
     let steep = abs(y1 - y0) > abs(x1 - x0)
     let x0, y0, x1, y1 =
@@ -153,14 +157,18 @@ let render(context:RenderingContext) (state:TreatzState) =
             bltf (state.Sprites.[byte c]) ({X = (x + (i*16)) * 1<px>; Y = y * 1<px>; Width = 16<px>; Height = 16<px>}) 
             i <- i + 1
              
-
     // clear screen
-    context.Renderer |> SDLRender.setDrawColor (0uy,0uy,50uy,0uy) |> ignore
+    context.Renderer |> SDLRender.setDrawColor (0uy,0uy,0uy,0uy) |> ignore
     context.Renderer |> SDLRender.clear |> ignore
-
-    context.Surface
-    |> SDLSurface.fillRect None {Red=80uy;Green=80uy;Blue=200uy;Alpha=255uy}
-    |> ignore
+//
+//    context.Surface
+//    |> SDLSurface.fillRect None {Red=80uy;Green=80uy;Blue=200uy;Alpha=255uy}
+//    |> ignore
+//    
+//    context.Surface
+//    |> SDLSurface.fillRect None {Red=80uy;Green=80uy;Blue=200uy;Alpha=255uy}
+//    |> ignore
+//    
             
     context.Texture
     |> SDLTexture.update None context.Surface
@@ -173,8 +181,12 @@ let render(context:RenderingContext) (state:TreatzState) =
     | GameOver ->  
         ()
 
-  
+    context.Renderer |> SDLRender.setDrawColor (200uy,255uy,50uy,0uy) |> ignore
+    context.Renderer |> SDLRender.drawRect (createRect 0 0 (int screenWidth) (int screenHeight)) |> ignore
+    context.Renderer |> SDLRender.drawRect (createRect 1 1 (int screenWidth - 1) (int screenHeight - 1)) |> ignore
 
+   
+   
     context.Renderer |> SDLRender.present 
     
     // delay to lock at 60fps (we could do extra work here)
